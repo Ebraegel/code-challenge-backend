@@ -8,7 +8,7 @@ Developer documentation for the backend code challenge.
 ```shell
 ./bin/run
 ```
-This will start the backend api server on localhost:5000 and hot-reload after changes.
+This will start the backend api server on localhost:5000 and the ui on localhost:3000, and hot-reload after changes.
 
 
 ## Debugging

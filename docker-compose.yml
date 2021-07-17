@@ -11,16 +11,20 @@ services:
 #      - ./postgres-data/postgres:/var/lib/postgresql/data
 #    ports:
 #      - "5432:5432"
+  ui:
+    build:
+      context: ./ui
+    ports:
+      - "3000:3000"
+    volumes: [ ./ui:/app ]
   backend:
     container_name: backend
     restart: always
     build:
       context: ./backend
-      dockerfile: Dockerfile
     ports:
       - 5000:5000
-    volumes:
-      - ./backend:/app
+    volumes: [ ./backend:/app ]
     environment:
       FLASK_DEBUG: 1
       FLASK_APP: ./app.py
@@ -32,11 +36,3 @@ services:
     # for pdb
     stdin_open: true
     tty: true
-#  frontend:
-#    build:
-#      context: .
-#      dockerfile: dockerfiles/Dockerfile-ui
-#    ports:
-#      - "3000:3000"
-#    links:
-#      - "backend:be"
