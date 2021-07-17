@@ -1,0 +1,42 @@
+version: '2.1'
+services:
+# if we need a db at some point
+#  postgres:
+#    restart: always
+#    image: postgres:10
+#    environment:
+#      - POSTGRES_USER=${POSTGRES_USER}
+#      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+#      - POSTGRES_DB=${POSTGRES_DB}    volumes:
+#      - ./postgres-data/postgres:/var/lib/postgresql/data
+#    ports:
+#      - "5432:5432"
+  backend:
+    container_name: backend
+    restart: always
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - 5000:5000
+    volumes:
+      - ./backend:/app
+    environment:
+      FLASK_DEBUG: 1
+      FLASK_APP: ./app.py
+    healthcheck:
+      test: curl --fail -s http://localhost:5000/healthcheck | grep 'Healthy!' || exit 1
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+    # for pdb
+    stdin_open: true
+    tty: true
+#  frontend:
+#    build:
+#      context: .
+#      dockerfile: dockerfiles/Dockerfile-ui
+#    ports:
+#      - "3000:3000"
+#    links:
+#      - "backend:be"
