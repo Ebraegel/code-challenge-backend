@@ -4,17 +4,30 @@ import React, { useState, useEffect } from 'react'
 
 export default function Incidents(props) {
     const [incidents, setIncidents] = useState([]);
+    const [location, setLocation] = useState({})
 
     const getIncidents = async () => {
-        const response = await axios.get('http://localhost:5000/incidents')
+        const response = await axios.get('http://localhost:5000/incidents', {params: {lat: 57.29905319213867, long: 13.135849952697754}})
         console.log('Got incidents:');
         console.log(response.data);
         setIncidents(response.data.incidents)
     }
 
+    const getLocation = async () => {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            console.log("Latitude is :", position.coords.latitude);
+            console.log("Longitude is :", position.coords.longitude);
+            setLocation({lat: position.coords.latitude, long: position.coords.longitude})
+
+        },
+            function(error){console.log(error)});    }
+
+
     useEffect(() => {
+        getLocation()
         getIncidents()
     }, [])
+
 
     return (
         <div id="incidents">
