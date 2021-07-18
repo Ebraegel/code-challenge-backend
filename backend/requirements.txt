@@ -5,6 +5,8 @@ click==8.0.1
 Flask==2.0.1
 Flask-Caching==1.10.1
 Flask-Cors==3.0.10
+geographiclib==1.52
+geopy==2.2.0
 idna==3.2
 iniconfig==1.1.1
 itsdangerous==2.0.1

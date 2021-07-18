@@ -7,7 +7,7 @@ export default function Incidents(props) {
 
     const getIncidents = async () => {
         const response = await axios.get('http://localhost:5000/incidents')
-        console.log('incidents:');
+        console.log('Got incidents:');
         console.log(response.data);
         setIncidents(response.data.incidents)
     }

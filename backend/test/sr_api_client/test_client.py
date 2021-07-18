@@ -1,7 +1,5 @@
 from unittest.mock import patch
 
-import pytest
-
 from code_challenge_backend.sr_api_client.client import TrafikApiClient
 
 
