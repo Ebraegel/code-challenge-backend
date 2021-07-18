@@ -1,13 +1,14 @@
 from flask import Flask
+from flask_cors import CORS
 
 from code_challenge_backend.sr_api_client.client import TrafikApiClient
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/healthcheck')
 def healthcheck():
     return "Healthy!"
-
 
 @app.route('/')
 def hello():

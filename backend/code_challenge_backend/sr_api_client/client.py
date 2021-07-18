@@ -1,6 +1,5 @@
 import requests
 
-
 class TrafikApiClient:
     BASE_URL = "http://api.sr.se/api/v2/traffic"
     DEFAULT_PARAMS = {"pagination": "false", "format": "json"}
@@ -14,8 +13,10 @@ class TrafikApiClient:
         """Returns a list of all incidents from the SR traffic API"""
         url = self._base_url + "/messages"
         response = requests.get(url, params=self._default_params)
-        # import pdb; pdb.set_trace()
-        return response.json()['messages']
+        if response.ok:
+            return response.json()['messages']
+        else:
+            return []
 
 # todo real error handlng? https://www.nylas.com/blog/use-python-requests-module-rest-apis/
         # response.json() =>

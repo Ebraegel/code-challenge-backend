@@ -8,8 +8,13 @@ Developer documentation for the backend code challenge.
 ```shell
 ./bin/run
 ```
-This will start the backend api server on localhost:5000 and the ui on localhost:3000, and hot-reload after changes.
-
+### UI
+http://localhost:5000
+### Backend
+```shell
+curl localhost:5000/healthcheck
+curl localhost:5000/incidents
+```
 
 ## Debugging
 ### Watching Container Logs
@@ -24,7 +29,17 @@ docker attach backend
 ```
 To detach without killing the process, use `Ctrl`+`P` then `Ctrl`+`Q`, instead of `Ctrl`+`C`.
 
-### React
-???
 
+## Testing
+### Backend
+In Docker
+```shell
+./bin/test
+```
 
+Locally
+```shell
+cd backend
+pip3 install -r requirements.txt
+pytest
+```
