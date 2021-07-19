@@ -32,7 +32,36 @@ on:
 name: Deploy to Amazon ECS
 
 jobs:
+  test-ui:
+    name: Test UI
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Run UI Tests
+        run: |
+          echo TODO: run ui tests
+
+  test-backend:
+    name: Test Backend
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Run Backend Tests
+        run: |
+          echo TODO: run backend tests
+
   deploy:
+    needs:
+      - test-ui
+      - test-backend
     name: Deploy
     runs-on: ubuntu-latest
     environment: production
