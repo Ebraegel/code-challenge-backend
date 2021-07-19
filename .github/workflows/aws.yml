@@ -54,17 +54,23 @@ jobs:
 
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
+    env:
+      ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      IMAGE_TAG: ${{ github.sha }}
       env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        IMAGE_TAG: ${{ github.sha }}
+        UI_IMAGE_TAG="$ECR_REGISTRY/doro-traffic-ui:$IMAGE_TAG"
+        BACKEND_IMAGE_TAG="$ECR_REGISTRY/doro-traffic-backend:$IMAGE_TAG"
       run: |
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        docker build ./ui --tag $ECR_REGISTRY/doro-traffic-ui:$IMAGE_TAG
-        docker build ./backend --tag $ECR_REGISTRY/doro-traffic-backend:$IMAGE_TAG
-        docker push $ECR_REGISTRY/doro-traffic-ui:$IMAGE_TAG
-        docker push $ECR_REGISTRY/doro-traffic-ui:$IMAGE_TAG
+        docker build ./ui --tag $UI_IMAGE_TAG
+        docker build ./backend --tag $BACKEND_IMAGE_TAG
+        docker push $UI_IMAGE_TAG
+        docker push $BACKEND_IMAGE_TAG
+        echo "::set-output name=ui-image::$UI_IMAGE_TAG"
+        echo "::set-output name=backend-image::$BACKEND_IMAGE_TAG"
+
 
 #     - name: Fill in the new image ID in the Amazon ECS task definition
 #       id: task-def
