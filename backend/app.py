@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_caching import Cache
 
@@ -30,6 +30,5 @@ def incidents():
         user_long = request.args.get('long')
         incident_list = filter_locations_by_distance(locations=incident_list, lat=user_lat, long=user_long, max_distance=30)
 
-    # can we just return a top-level list? seems nicer
-    # https://stackoverflow.com/questions/13081532/return-json-response-from-flask-view
-    return {"incidents": incident_list}
+
+    return jsonify(incident_list)
