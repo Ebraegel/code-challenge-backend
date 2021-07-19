@@ -124,7 +124,7 @@ jobs:
       id: render-backend
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition: ${{ steps.render-web.outputs.task-definition }}
+        task-definition: ${{ steps.render-ui.outputs.task-definition }}
         container-name: backend
         image: ${{ steps.set-image-tags.outputs.backend-image }}
 
