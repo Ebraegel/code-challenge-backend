@@ -1,10 +1,5 @@
 """AWS CDK module to create ECS infrastructure"""
-<<<<<<< HEAD
 from aws_cdk import (core, aws_ecs as ecs, aws_ecr as ecr, aws_ec2 as ec2, aws_iam as iam, aws_ecs_patterns as ecs_patterns)
-=======
-from aws_cdk import (core, aws_ecs as ecs, aws_ecr as ecr, aws_ec2 as ec2, aws_iam as iam,
-                     aws_ecs_patterns as ecs_patterns, aws_elasticloadbalancingv2 as aws_elbv2)
->>>>>>> 55c9c92ed1b62150f7647b74f127fea9c631c6f2
 
 
 class DoroTrafficAppCdkStack(core.Stack):
@@ -57,20 +52,16 @@ class DoroTrafficAppCdkStack(core.Stack):
                                                     execution_role=execution_role,
                                                     family="doro-traffic-app-task-definition")
 
-<<<<<<< HEAD
         nginx_container = task_definition.add_container(
             "nginx",
-=======
-        backend_container = task_definition.add_container(
-            "doro-traffic-backend",
->>>>>>> 55c9c92ed1b62150f7647b74f127fea9c631c6f2
+
             image=ecs.ContainerImage.from_registry("amazon/amazon-ecs-sample"),
         )
         nginx_container_port_mapping = ecs.PortMapping(container_port=80)
         nginx_container.add_port_mappings(nginx_container_port_mapping)
 
         ui_container = task_definition.add_container(
-<<<<<<< HEAD
+
             "ui",
             image=ecs.ContainerImage.from_registry("amazon/amazon-ecs-sample"),
         )
@@ -91,23 +82,3 @@ class DoroTrafficAppCdkStack(core.Stack):
                                                            task_definition=task_definition,
                                                            service_name="doro-traffic-app-service",
                                                            )
-=======
-            "doro-traffic-ui",
-            image=ecs.ContainerImage.from_registry("amazon/amazon-ecs-sample"),
-        )
-
-        nginx_container = task_definition.add_container(
-            "doro-traffic-nginx",
-            image=ecs.ContainerImage.from_registry("amazon/amazon-ecs-sample"),
-        )
-
-        # Create the ECS Service
-        service = ecs.FargateService(self,
-                                     "doro-traffic-app-service",
-                                     cluster=cluster,
-                                     task_definition=task_definition,
-                                     service_name="doro-traffic-app-service",
-                                    )
-
-
->>>>>>> 55c9c92ed1b62150f7647b74f127fea9c631c6f2
