@@ -11,17 +11,20 @@ CORS(app)
 cache = Cache(config={'CACHE_TYPE': 'SimpleCache'})
 cache.init_app(app)
 
+
 @app.route('/healthcheck')
 def healthcheck():
-    return "Healthy!"
+    return "Healthy!\n"
+
 
 @app.route('/')
 def hello():
-    return "Hello!"
+    return "Hello!\n"
 
 
 @app.route('/incidents')
-@cache.cached(timeout=900)
+# @cache.cached(timeout=900) TODO: [BUG] put the caching on TrafikApiClient().list_incidents() somehow
+# so we don't return the same incidents for different locations
 def incidents():
     incident_list = TrafikApiClient().list_incidents()
 
