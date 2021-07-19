@@ -6,7 +6,6 @@ services:
     ports:
       - "3000:3000"
     volumes: [ ./ui:/app ]
-    profiles: ["dev"]
   backend:
     container_name: backend
     restart: always
@@ -26,4 +25,12 @@ services:
     # for pdb
     stdin_open: true
     tty: true
-    profiles: ["dev"]
+  nginx:
+    container_name: nginx
+    build:
+      context: ./nginx
+    ports:
+    - 80:80
+    links:
+      - ui
+      - backend

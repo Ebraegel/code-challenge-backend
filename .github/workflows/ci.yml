@@ -89,6 +89,7 @@ jobs:
       run: |
         echo "::set-output name=ui-image::${{ env.ECR_REGISTRY }}/doro-traffic-ui:${{ env.IMAGE_TAG }}"
         echo "::set-output name=backend-image::${{ env.ECR_REGISTRY }}/doro-traffic-backend:${{ env.IMAGE_TAG }}"
+        echo "::set-output name=nginx-image::${{ env.ECR_REGISTRY }}/doro-traffic-nginx:${{ env.IMAGE_TAG }}"
 
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
@@ -98,10 +99,13 @@ jobs:
         # be deployed to ECS.
         export UI_IMAGE_TAG=${{ steps.set-image-tags.outputs.ui-image }}
         export BACKEND_IMAGE_TAG=${{ steps.set-image-tags.outputs.backend-image }}
+        export NGINX_IMAGE_TAG=${{ steps.set-image-tags.outputs.nginx-image }}
         docker build ./ui --tag $UI_IMAGE_TAG
         docker build ./backend --tag $BACKEND_IMAGE_TAG
+        docker build ./nginx --tag $NGINX_IMAGE_TAG
         docker push $UI_IMAGE_TAG
         docker push $BACKEND_IMAGE_TAG
+        docker push $NGINX_IMAGE_TAG
 
     - name: Download task definition
       id: download-def
@@ -124,10 +128,18 @@ jobs:
         container-name: doro-traffic-backend
         image: ${{ steps.set-image-tags.outputs.backend-image }}
 
+    - name: Render Amazon ECS task definition for nginx container
+      id: render-nginx
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ${{ steps.render-backend.outputs.task-definition }}
+        container-name: doro-traffic-backend
+        image: ${{ steps.set-image-tags.outputs.nginx-image }}
+
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
-        task-definition: ${{ steps.render-backend.outputs.task-definition }}
+        task-definition: ${{ steps.render-nginx.outputs.task-definition }}
         service: doro-traffic-app-service
         cluster: doro-traffic-app-cluster
         wait-for-service-stability: true

@@ -2,3 +2,5 @@
 .env
 *.iml
 __pycache__/
+./task-definition.json
+

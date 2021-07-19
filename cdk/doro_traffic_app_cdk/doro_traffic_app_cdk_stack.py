@@ -1,5 +1,7 @@
 """AWS CDK module to create ECS infrastructure"""
-from aws_cdk import (core, aws_ecs as ecs, aws_ecr as ecr, aws_ec2 as ec2, aws_iam as iam)
+from aws_cdk import (core, aws_ecs as ecs, aws_ecr as ecr, aws_ec2 as ec2, aws_iam as iam,
+                     aws_ecs_patterns as ecs_patterns, aws_elasticloadbalancingv2 as aws_elbv2)
+
 
 class DoroTrafficAppCdkStack(core.Stack):
     def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
@@ -12,6 +14,9 @@ class DoroTrafficAppCdkStack(core.Stack):
         ecr.Repository(self,
                        "doro-traffic-ui",
                        repository_name="doro-traffic-ui")
+        ecr.Repository(self,
+                       "doro-traffic-nginx",
+                       repository_name="doro-traffic-nginx")
 
         # Create the ECS Cluster (and VPC)
         vpc = ec2.Vpc(self,
@@ -37,24 +42,34 @@ class DoroTrafficAppCdkStack(core.Stack):
                 "ecr:BatchGetImage",
                 "logs:CreateLogStream",
                 "logs:PutLogEvents"
-                ]
+            ]
         ))
         task_definition = ecs.FargateTaskDefinition(self,
                                                     "doro-traffic-app-task-definition",
                                                     execution_role=execution_role,
                                                     family="doro-traffic-app-task-definition")
-        task_definition.add_container(
+
+        backend_container = task_definition.add_container(
             "doro-traffic-backend",
-            image=ecs.ContainerImage.from_registry("amazon/amazon-ecs-sample")
+            image=ecs.ContainerImage.from_registry("amazon/amazon-ecs-sample"),
         )
 
-        task_definition.add_container(
+        ui_container = task_definition.add_container(
             "doro-traffic-ui",
-            image=ecs.ContainerImage.from_registry("amazon/amazon-ecs-sample")
+            image=ecs.ContainerImage.from_registry("amazon/amazon-ecs-sample"),
         )
+
+        nginx_container = task_definition.add_container(
+            "doro-traffic-nginx",
+            image=ecs.ContainerImage.from_registry("amazon/amazon-ecs-sample"),
+        )
+
         # Create the ECS Service
         service = ecs.FargateService(self,
                                      "doro-traffic-app-service",
                                      cluster=cluster,
                                      task_definition=task_definition,
-                                     service_name="doro-traffic-app-service")
+                                     service_name="doro-traffic-app-service",
+                                    )
+
+
