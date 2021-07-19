@@ -8,7 +8,7 @@ class DoroTrafficAppCdkStack(core.Stack):
         # Create the ECR Repositories
         ecr.Repository(self,
                        "doro-traffic-backend",
-                        repository_name="doro-traffic-backend")
+                       repository_name="doro-traffic-backend")
         ecr.Repository(self,
                        "doro-traffic-ui",
                        repository_name="doro-traffic-ui")
