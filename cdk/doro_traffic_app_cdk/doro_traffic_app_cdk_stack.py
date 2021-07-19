@@ -2,17 +2,16 @@
 from aws_cdk import (core, aws_ecs as ecs, aws_ecr as ecr, aws_ec2 as ec2, aws_iam as iam)
 
 class DoroTrafficAppCdkStack(core.Stack):
-
     def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
-        # Create the ECR Repository
-        backend_ecr_repository = ecr.Repository(self,
-                                        "doro-traffic-backend",
-                                        repository_name="doro-traffic-backend")
-        ui_ecr_repository = ecr.Repository(self,
-                                        "doro-traffic-ui",
-                                        repository_name="doro-traffic-ui")
+        # Create the ECR Repositories
+        ecr.Repository(self,
+                       "doro-traffic-backend",
+                        repository_name="doro-traffic-backend")
+        ecr.Repository(self,
+                       "doro-traffic-ui",
+                       repository_name="doro-traffic-ui")
 
         # Create the ECS Cluster (and VPC)
         vpc = ec2.Vpc(self,
@@ -44,11 +43,15 @@ class DoroTrafficAppCdkStack(core.Stack):
                                                     "doro-traffic-app-task-definition",
                                                     execution_role=execution_role,
                                                     family="doro-traffic-app-task-definition")
-        container = task_definition.add_container(
-            "doro-traffic-app",
+        task_definition.add_container(
+            "doro-traffic-backend",
             image=ecs.ContainerImage.from_registry("amazon/amazon-ecs-sample")
         )
 
+        task_definition.add_container(
+            "doro-traffic-ui",
+            image=ecs.ContainerImage.from_registry("amazon/amazon-ecs-sample")
+        )
         # Create the ECS Service
         service = ecs.FargateService(self,
                                      "doro-traffic-app-service",
