@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Doro Traffic
 
 on:
   push:
@@ -8,8 +8,7 @@ on:
 
 jobs:
 
-  build_ui:
-
+  test_ui:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,12 +17,15 @@ jobs:
       run: docker build ./ui --tag doro-traffic-ui:$(date +%s)
 
 
-  build_backend:
-
+  test_backend:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
       run: docker build ./ui --tag doro-traffic-backend:$(date +%s)
-      
+
+      - name: Build docker images
+        run: docker-compose build
+
+      - name: Run tests
+        run: docker-compose run test
