@@ -32,14 +32,12 @@ To detach without killing the process, use `Ctrl`+`P` then `Ctrl`+`Q`, instead o
 
 ## Testing
 ### Backend
-In Docker
 ```shell
-./bin/test
+./bin/backend-tests
 ```
 
-Locally
+
+### UI
 ```shell
-cd backend
-pip3 install -r requirements.txt
-pytest
+./bin/ui-tests
 ```

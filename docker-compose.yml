@@ -1,11 +1,12 @@
-version: '2.1'
 services:
   ui:
+    container_name: ui
     build:
       context: ./ui
     ports:
       - "3000:3000"
     volumes: [ ./ui:/app ]
+    profiles: ["dev"]
   backend:
     container_name: backend
     restart: always
@@ -25,3 +26,4 @@ services:
     # for pdb
     stdin_open: true
     tty: true
+    profiles: ["dev"]

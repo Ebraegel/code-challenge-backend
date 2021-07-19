@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker-compose run ui yarn test
+docker-compose run ui npm test -- --watchAll=false
