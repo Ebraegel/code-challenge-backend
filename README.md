@@ -3,6 +3,57 @@ Backend coding challenge
 
 ![](https://images.unsplash.com/photo-1518558406542-3dc7f0e69a40?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=3750&q=80)
 
+Here's my take on the Doro backend coding challenge. Here are the main areas I focused on, in roughly reverse order of how heavily I focused on them:
+
+### UI
+* [./ui](./ui)
+* Extremely minimalistic :)
+* I didn't quite figure out how to properly get location data, so the ui is currently sending hard-coded lat/long to the backend :(
+
+### Backend
+* [./backend](./backend)
+* Simple REST API written in Flask
+* `/healthcheck` and `/incidents` endpoints
+* `/indcidents` shows all known traffic incidents by default, and accepts optional query params `lat`, `long`, and `distance` to filter incidents to those within a certain radius of a location
+  * `distance` defaults to 30km if `lat`/`long` are provided without it
+* `/incidents` caches results from the SR traffic API for 15 minutes to avoid hammering it with every request 
+
+### Development environment
+* See [DEVELOPMENT.md](DEVELOPMENT.md) for a bit more detail
+* Dockerized and managed using [docker-compose](docker-compose.yml) and a few scripts in [./bin](./bin)
+
+### CI/CD
+* [.github/workflows/.ci.yml](.github/workflows/ci.yml)
+* Uses Github Actions
+* Builds ui, backend, and nginx images and pushes them to a private AWS ECR repo
+* Runs ui and backend tests using the same images
+* Deploys images to AWS ECS
+![](images/workflow.png)
+
+
+### Infrastructure (as code!)
+* [doro_traffic_app_cdk/doro_traffic_app_cdk_stack.py](doro_traffic_app_cdk/doro_traffic_app_cdk_stack.py)
+* Uses CDK to create/configure VPC, ECR container registries, cluster, tasks, containers, load balancer, and logging
+* Containers log to stdout which is shipped to CloudWatch
+![](images/cloudwatch.png)
+
+
+### Limitations and possible future work
+* Does not do any kind of realtime updating of connected clients. All updates are request-based. I had initially considered looking at an AppSync and GraphQL-based solution, but had to go with something much simpler in the interest of time. I also considered the possibility of using websocket connections, coupled with a periodic asynchronous job that refreshed a cache of incidents from the SR traffic API and then pushed updates to clients who hadn't seen them before, but again, had to scrap it for time constraints.
+* HTTP only. Certificate request is still pending validation, otherwise SSL would be the next thing to set up. 
+* As mentioned in the UI section, I hardcoded some lat/long coordinates as a placeholder, and never got time to figure out how to get location data for real. IIRC one problem was the unencrypted connection, so if I'd managed to set up SSL, I may have been able to make more progress there.
+* Test coverage is sparse. No post-deploy tests.
+* No qc/int/etc environments - unit tests pass and it goes straight to prod. Would prefer to, e.g., deploy to a qc environment for remote post-deploy testing, load testing, etc, before allowing the workflow to deploy to prod.
+* Application webservers are not very production-ready, but at least they're behind a nginx reverse proxy
+* Should compile JS and serve as static assets from nginx
+* Could automate CDK infrastructure updates in the GitHub workflow
+
+Thanks for looking!
+
+Erik
+
+----------
+
 Traffic was a nightmare
 -----------------------
 
