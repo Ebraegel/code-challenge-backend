@@ -4,8 +4,11 @@ services:
     build:
       context: ./ui
     ports:
-      - "3000:3000"
-    volumes: [ ./ui:/app ]
+      - 3000:3000
+    volumes:
+      - ./ui:/app
+    environment:
+      REACT_APP_INCIDENT_ENDPOINT: http://localhost:5000/incidents
   backend:
     container_name: backend
     restart: always
@@ -13,7 +16,8 @@ services:
       context: ./backend
     ports:
       - 5000:5000
-    volumes: [ ./backend:/app ]
+    volumes:
+      - ./backend:/app
     environment:
       FLASK_DEBUG: 1
       FLASK_APP: ./app.py
@@ -25,12 +29,3 @@ services:
     # for pdb
     stdin_open: true
     tty: true
-  nginx:
-    container_name: nginx
-    build:
-      context: ./nginx
-    ports:
-    - 80:80
-    links:
-      - ui
-      - backend

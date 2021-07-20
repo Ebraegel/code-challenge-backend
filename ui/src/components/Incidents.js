@@ -6,8 +6,10 @@ export default function Incidents(props) {
     const [incidents, setIncidents] = useState([]);
     const [location, setLocation] = useState({})
 
+    const incident_endpoint = process.env.REACT_APP_INCIDENT_ENDPOINT || '/backend/incidents'
+
     const getIncidents = async () => {
-        const response = await axios.get('/backend/incidents', {params: {lat: 57.29905319213867, long: 13.135849952697754}})
+        const response = await axios.get(incident_endpoint, {params: {lat: 57.29905319213867, long: 13.135849952697754}})
         console.log('Got incidents:');
         console.log(response.data);
         setIncidents(response.data)
