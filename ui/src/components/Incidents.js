@@ -14,14 +14,15 @@ export default function Incidents(props) {
     }
 
     const getLocation = async () => {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            console.log("Latitude is :", position.coords.latitude);
-            console.log("Longitude is :", position.coords.longitude);
-            setLocation({lat: position.coords.latitude, long: position.coords.longitude})
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                console.log("Latitude is :", position.coords.latitude);
+                console.log("Longitude is :", position.coords.longitude);
+                setLocation({lat: position.coords.latitude, long: position.coords.longitude})
 
-        },
-            function(error){console.log(error)});    }
-
+            },
+                function(error){console.log(error)});    }
+        }
 
     useEffect(() => {
         getLocation()
