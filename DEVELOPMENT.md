@@ -9,12 +9,14 @@ Developer documentation for the backend code challenge.
 ./bin/run
 ```
 ### UI
-http://localhost:5000
+* http://localhost:5000
+
 ### Backend
-```shell
-curl localhost:5000/healthcheck
-curl localhost:5000/incidents
-```
+* http://localhost:5000/healthcheck
+* http://localhost:5000/incidents
+* http://localhost:5000/incidents?lat=55.60401900135806&long=13.006521052652744
+* http://localhost:5000/incidents?lat=55.60401900135806&long=13.006521052652744&distance=200
+
 
 ## Debugging
 ### Watching Container Logs

@@ -10,9 +10,4 @@ COPY . .
 ENV FLASK_ENV="docker"
 EXPOSE 5000
 
-# put this in docker-compose for now
-#HEALTHCHECK CMD curl --fail http://localhost:5000/ || exit 1
-
 CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
-
-#CMD python3 app.py

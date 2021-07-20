@@ -23,15 +23,17 @@ def hello():
 
 
 @app.route('/incidents')
-# @cache.cached(timeout=900) TODO: [BUG] put the caching on TrafikApiClient().list_incidents() somehow
-# so we don't return the same incidents for different locations
+# 15-minute cache for unique requests
+@cache.cached(timeout=900, key_prefix=lambda: request.url)
 def incidents():
     incident_list = TrafikApiClient().list_incidents()
-
     if 'lat' in request.args and 'long' in request.args:
         user_lat = request.args.get('lat')
         user_long = request.args.get('long')
-        incident_list = filter_locations_by_distance(locations=incident_list, lat=user_lat, long=user_long, max_distance=30)
-
+        distance = request.args.get('distance') or 30
+        incident_list = filter_locations_by_distance(locations=incident_list,
+                                                     lat=user_lat,
+                                                     long=user_long,
+                                                     max_distance=distance)
 
     return jsonify(incident_list)
